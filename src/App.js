@@ -67,7 +67,7 @@ export default function Counter() {
         <button
           className="rounded-md bg-indigo-600 px-4 py-2 text-lg font-semibold text-white shadow-md hover:bg-indigo-500 hover:scale-110 transition-transform duration-200 mr-4 disabled:bg-gray-400"
           onClick={updateCount}
-          disabled={count >= 50}
+          disabled={count > 51}
         >
           +1
         </button>
