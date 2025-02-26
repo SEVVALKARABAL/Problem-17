@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { document } from "postcss";
+import { useState, useEffect } from "react";
 
 // Bu bileşen sayaç uygulamasıdır. Kullanıcı her tıklamada sayıyı artırır ve bu sayı sekmenin başlığında (document.title) gösterilir.
 // Görevler:
-// 1. useEffect hook'u kullanarak, sayaç değeri her değiştiğinde sekmenin başlığını (document.title) "Tıklama Sayısı: X" şeklinde güncelleyin. 
+// 1. useEffect hook'u kullanarak, sayaç değeri her değiştiğinde sekmenin başlığını (document.title) "Tıklama Sayısı: X" şeklinde güncelleyin.
 // 2. Bileşen her render edildiğinde konsola "Rendering" yazılmaya devam etsin. Ancak yalnızca sayacın değiştiği durumlarda "Rendering Sonrası" mesajını görün.
 // 3. Kullanıcı "count" değerini sıfırlamak için sıfırlama butonu ekleyin (örn. "Sıfırla" butonu).
 // 4. Sekmenin başlığı ilk render sırasında varsayılan değer almalı (örn. "Sayaç Uygulaması").
@@ -20,31 +21,67 @@ import { useState, useEffect } from 'react'
 // 5. Sıfırlama butonunu, mevcut sayaca göre farklı bir renk tonuyla vurgulayın (örn. tıklama sayısı sıfır değilse buton daha belirgin olsun).
 
 export default function Counter() {
-  const [count, setCount] = useState(0)
-
+  const [count, setCount] = useState(0);
+  function getEmoji(count) {
+    if (count > 20) return "🎉";
+    if (count > 10) return "😎";
+    return "😊";
+  }
   useEffect(() => {
-    console.log('Rendering Sonrası')
-  })
+    document.title =
+      count === 0
+        ? "Sayaç Uygulaması"
+        : `Tıklama Sayısı: ${count} ${getEmoji(count)}`;
+    console.log("Rendering Sonrası");
+    if (count === 50) {
+      alert("50'ye ulaştınız!");
+    }
+  }, [count]);
 
   function updateCount() {
-    setCount((c) => c + 1)
+    if (count < 50) {
+      setCount((c) => c + 1);
+    }
   }
 
-  console.log('Rendering')
+  function refreshCount() {
+    setCount(0);
+  }
+
+  console.log("Rendering");
 
   return (
-    <div className='bg-blue-500/50 h-screen grid place-items-center'>
-      <div className='text-orange-500 mx-auto text-center'>
-        <h1 className='text-4xl font-bold tracking-tight text-gray-900 pb-8'>
+    <div className="bg-blue-500/50 h-screen grid place-items-center">
+      <div className="text-center bg-white p-8 rounded-xl shadow-lg border-4 border-gray-300">
+        <h1
+          className={`text-4xl font-bold tracking-tight pb-6 ${
+            count > 20
+              ? "text-red-500"
+              : count > 10
+              ? "text-yellow-500"
+              : "text-green-500"
+          }`}
+        >
           {count} kez tıkladınız
         </h1>
         <button
-          className='rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+          className="rounded-md bg-indigo-600 px-4 py-2 text-lg font-semibold text-white shadow-md hover:bg-indigo-500 hover:scale-110 transition-transform duration-200 mr-4 disabled:bg-gray-400"
           onClick={updateCount}
+          disabled={count >= 50}
         >
           +1
         </button>
+        <button
+          className={`rounded-md px-4 py-2 text-lg font-semibold shadow-md transition-colors duration-200 ${
+            count > 0
+              ? "bg-red-600 text-white hover:bg-red-500"
+              : "bg-gray-400 text-gray-200"
+          }`}
+          onClick={refreshCount}
+        >
+          Sıfırla
+        </button>
       </div>
     </div>
-  )
+  );
 }
